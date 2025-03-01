@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <button class="new-chat-btn">
+          <span class="material-symbols-rounded">add</span>
+          New chat
+        </button>
+        <button class="mobile-close">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="sidebar-conversations">
+        <!-- Conversation history will be added here -->
+      </div>
+      <div class="sidebar-footer">
+        <button class="clear-conversations-btn">
+          <span class="material-symbols-rounded">delete</span>
+          Clear conversations
+        </button>
+        <button class="settings-btn" id="settings-btn">
+          <span class="material-symbols-rounded">settings</span>
+          Change API Key & Model
+        </button>
+        <div class="sidebar-info">
+          <span>AI Chat</span>
+          <span>Version 1.0.0</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="mobile-header">
+        <button class="mobile-menu-btn">
+          <span class="material-symbols-rounded">menu</span>
+        </button>
+        <h1>AI Chat</h1>
+      </div>
+
+      <div class="chat-container">
+        <div class="welcome-screen" id="welcome-screen">
+          <div class="welcome-content">
+            <h1>AI Chat</h1>
+            <p>A modern AI assistant powered by OpenRouter</p>
+            
+            <div class="model-indicator">
+              <span class="model-icon">
+                <span class="material-symbols-rounded">smart_toy</span>
+              </span>
+              <span class="model-name" id="current-model-display">Loading model...</span>
+              <button class="change-model-btn" id="change-model-btn">
+                <span class="material-symbols-rounded">settings</span>
+              </button>
+            </div>
+            
+            <div class="examples">
+              <h2>Examples</h2>
+              <div class="example-grid">
+                <button class="example-btn">"Explain quantum computing in simple terms"</button>
+                <button class="example-btn">"Write a poem about artificial intelligence"</button>
+                <button class="example-btn">"How do I make a HTTP request in JavaScript?"</button>
+                <button class="example-btn">"Create a study plan for learning web development"</button>
+              </div>
+            </div>
+            
+            <div class="capabilities">
+              <h2>Capabilities</h2>
+              <ul>
+                <li>Remembers what you said earlier in the conversation</li>
+                <li>Allows you to provide follow-up corrections</li>
+                <li>Trained to decline inappropriate requests</li>
+                <li>Provides detailed and informative responses</li>
+              </ul>
+            </div>
+            
+            <div class="limitations">
+              <h2>Limitations</h2>
+              <ul>
+                <li>May occasionally generate incorrect information</li>
+                <li>May occasionally produce harmful or biased content</li>
+                <li>Limited knowledge of world and events after training</li>
+                <li>Cannot browse the internet in real-time</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+          <!-- Chat messages will be added here -->
+        </div>
+      </div>
+
+      <div class="chat-input-container">
+        <form id="chat-form">
+          <div class="chat-input-wrapper">
+            <textarea 
+              id="chat-input" 
+              placeholder="Message AI..." 
+              rows="1"
+              required
+            ></textarea>
+            <button type="submit" class="send-btn">
+              <span class="material-symbols-rounded">send</span>
+            </button>
+          </div>
+        </form>
+        <div class="disclaimer">
+          AI may display inaccurate info, including about people, so double-check its responses.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div class="api-key-modal" id="api-key-modal">
+    <div class="modal-content">
+      <h2>API Key & Model Settings</h2>
+      <p>You can use the default API key or enter your own from <a href="https://openrouter.ai/keys" target="_blank">OpenRouter</a>.</p>
+      <form id="api-key-form">
+        <div class="input-with-toggle">
+          <input type="password" id="api-key-input" placeholder="API Key" required>
+          <button type="button" id="toggle-api-visibility" class="toggle-visibility-btn">
+            <span class="material-symbols-rounded">visibility</span>
+          </button>
+        </div>
+        <div class="model-selection">
+          <label for="model-select">Select AI Model:</label>
+          <select id="model-select">
+            <!-- Free OpenRouter Models -->
+            <optgroup label="OpenAI Models">
+              <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </optgroup>
+            <optgroup label="Anthropic Models">
+              <option value="anthropic/claude-instant-v1">Claude Instant</option>
+              <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+            </optgroup>
+            <optgroup label="Google Models">
+              <option value="google/gemini-pro">Gemini Pro</option>
+            </optgroup>
+            <optgroup label="Meta Models">
+              <option value="meta-llama/llama-2-13b-chat">Llama 2 13B</option>
+              <option value="meta-llama/llama-2-70b-chat">Llama 2 70B</option>
+              <option value="meta-llama/llama-3-8b-instruct">Llama 3 8B</option>
+            </optgroup>
+            <optgroup label="Mistral Models">
+              <option value="mistralai/mistral-7b-instruct">Mistral 7B</option>
+              <option value="mistralai/mixtral-8x7b-instruct">Mixtral 8x7B</option>
+              <option value="mistralai/mistral-small">Mistral Small</option>
+            </optgroup>
+            <optgroup label="DeepSeek Models">
+              <option value="deepseek/deepseek-chat">DeepSeek Chat</option>
+              <option value="deepseek/deepseek-coder">DeepSeek Coder</option>
+            </optgroup>
+            <optgroup label="Other Free Models">
+              <option value="cohere/command-r">Cohere Command-R</option>
+              <option value="cohere/command-r-plus">Cohere Command-R+</option>
+              <option value="perplexity/sonar-small-online">Perplexity Sonar Small</option>
+              <option value="rwkv/rwkv-5-world-3b">RWKV-5 World 3B</option>
+              <option value="palm/chat-bison">PaLM Chat-Bison</option>
+              <option value="01-ai/yi-34b-chat">Yi 34B Chat</option>
+              <option value="databricks/dbrx-instruct">DBRX Instruct</option>
+              <option value="qwen/qwen-14b-chat">Qwen 14B Chat</option>
+              <option value="microsoft/phi-2">Phi-2</option>
+              <option value="nousresearch/nous-hermes-2-mixtral-8x7b-dpo">Nous Hermes 2 Mixtral</option>
+              <option value="gryphe/mythomist-7b">Mythomist 7B</option>
+              <option value="allenai/tulu-2-dpo-70b">Tulu-2-DPO 70B</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="primary-btn">Save Settings</button>
+          <button type="button" id="use-default-btn" class="secondary-btn">Use Default Settings</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>
