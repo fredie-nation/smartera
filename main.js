@@ -55,7 +55,7 @@ const sidebar = document.querySelector('.sidebar');
 const exampleBtns = document.querySelectorAll('.example-btn');
 
 // Default API key and model
-const DEFAULT_API_KEY = "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";
+const DEFAULT_API_KEY = "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";
 const DEFAULT_MODEL = "google/gemini-pro";
 
 // State
