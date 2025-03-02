@@ -73,7 +73,7 @@ const toggleGoogleVisibilityBtn = document.getElementById('toggle-google-visibil
 // Default API keys and models
 const DEFAULT_OPENROUTER_API_KEY = "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";
 const DEFAULT_OPENROUTER_MODEL = "google/gemini-pro";
-const DEFAULT_GROQ_API_KEY = "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";
+const DEFAULT_GROQ_API_KEY = "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";
 const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
 const DEFAULT_GOOGLE_MODEL = "gemini-2.0-flash";
 
