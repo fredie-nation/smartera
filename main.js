@@ -74,7 +74,7 @@ const toggleGoogleVisibilityBtn = document.getElementById('toggle-google-visibil
 const DEFAULT_OPENROUTER_API_KEY = "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";
 const DEFAULT_OPENROUTER_MODEL = "google/gemini-pro";
 const DEFAULT_GROQ_API_KEY = "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";
-const DEFAULT_GROQ_MODEL = "deepseek-r1-distill-qwen-32b";
+const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
 const DEFAULT_GOOGLE_MODEL = "gemini-2.0-flash";
 
 // State
