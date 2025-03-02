@@ -206,7 +206,6 @@ body {
   max-width: 800px;
   width: 100%;
   padding: 20px;
-  padding-top: 9rem;
 }
 
 .welcome-content h1 {
@@ -686,6 +685,8 @@ body {
   max-width: 500px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
   animation: modalFadeIn 0.3s ease;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 @keyframes modalFadeIn {
@@ -697,6 +698,7 @@ body {
   font-size: 20px;
   margin-bottom: 16px;
   color: var(--text-color);
+  text-align: center;
 }
 
 .modal-content p {
@@ -714,12 +716,70 @@ body {
   text-decoration: underline;
 }
 
+/* API Provider Selector */
+.api-provider-selector {
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.api-provider-selector label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-color);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.provider-options {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.provider-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 8px 12px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.provider-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.provider-option input[type="radio"] {
+  accent-color: var(--primary-color);
+}
+
+.provider-label {
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.provider-settings {
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
 .input-with-toggle {
   position: relative;
   margin-bottom: 16px;
 }
 
-#api-key-input {
+#openrouter-api-key-input,
+#groq-api-key-input,
+#google-api-key-input {
   width: 100%;
   padding: 12px 40px 12px 12px;
   background-color: var(--main-bg);
@@ -729,7 +789,9 @@ body {
   font-size: 14px;
 }
 
-#api-key-input:focus {
+#openrouter-api-key-input:focus,
+#groq-api-key-input:focus,
+#google-api-key-input:focus {
   border-color: var(--primary-color);
   outline: none;
   box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
@@ -755,9 +817,12 @@ body {
   margin-bottom: 8px;
   color: var(--text-color);
   font-size: 14px;
+  font-weight: 500;
 }
 
-#model-select {
+#openrouter-model-select,
+#groq-model-select,
+#google-model-select {
   width: 100%;
   padding: 12px;
   background-color: var(--main-bg);
@@ -772,13 +837,20 @@ body {
   background-size: 16px;
 }
 
-#model-select:focus {
+#openrouter-model-select:focus,
+#groq-model-select:focus,
+#google-model-select:focus {
   border-color: var(--primary-color);
   outline: none;
   box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.3);
 }
 
-#model-select option, #model-select optgroup {
+#openrouter-model-select option,
+#openrouter-model-select optgroup,
+#groq-model-select option,
+#groq-model-select optgroup,
+#google-model-select option,
+#google-model-select optgroup {
   background-color: var(--main-bg);
   color: var(--text-color);
 }
@@ -789,7 +861,7 @@ body {
 }
 
 .primary-btn, .secondary-btn {
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
@@ -963,6 +1035,17 @@ body {
   .copy-message-btn,
   .message-content:hover .copy-message-btn {
     opacity: 0.8;
+  }
+  
+  /* Provider options in modal */
+  .provider-options {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .modal-content {
+    max-height: 80vh;
+    overflow-y: auto;
   }
 }
 
