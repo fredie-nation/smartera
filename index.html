@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smartera AI</title>
+  <title>AI Chat</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
@@ -34,8 +34,8 @@
           Change API Key & Model
         </button>
         <div class="sidebar-info">
-          <span>Fredie AI</span>
-          <span>Version 1.o</span>
+          <span>AI Chat</span>
+          <span>Version 1.0.0</span>
         </div>
       </div>
     </aside>
@@ -46,14 +46,14 @@
         <button class="mobile-menu-btn">
           <span class="material-symbols-rounded">menu</span>
         </button>
-        <h1>Smartera</h1>
+        <h1>AI Chat</h1>
       </div>
 
       <div class="chat-container">
         <div class="welcome-screen" id="welcome-screen">
           <div class="welcome-content">
-            <h1>Smartera</h1>
-            <p>A modern AI assistant powered by OpenRouter</p>
+            <h1>AI Chat</h1>
+            <p>A modern AI assistant powered by OpenRouter, Groq, and Google Gemini</p>
             
             <div class="model-indicator">
               <span class="model-icon">
@@ -126,17 +126,36 @@
   <div class="api-key-modal" id="api-key-modal">
     <div class="modal-content">
       <h2>API Key & Model Settings</h2>
-      <p>You can use the default API key or enter your own from <a href="https://openrouter.ai/keys" target="_blank">OpenRouter</a>.</p>
-      <form id="api-key-form">
+      
+      <div class="api-provider-selector">
+        <label>Select API Provider:</label>
+        <div class="provider-options">
+          <label class="provider-option">
+            <input type="radio" name="api-provider" value="openrouter" checked>
+            <span class="provider-label">OpenRouter</span>
+          </label>
+          <label class="provider-option">
+            <input type="radio" name="api-provider" value="groq">
+            <span class="provider-label">Groq</span>
+          </label>
+          <label class="provider-option">
+            <input type="radio" name="api-provider" value="google">
+            <span class="provider-label">Google Gemini</span>
+          </label>
+        </div>
+      </div>
+      
+      <div id="openrouter-settings" class="provider-settings">
+        <p>You can use the default API key or enter your own from <a href="https://openrouter.ai/keys" target="_blank">OpenRouter</a>.</p>
         <div class="input-with-toggle">
-          <input type="password" id="api-key-input" placeholder="API Key" required>
-          <button type="button" id="toggle-api-visibility" class="toggle-visibility-btn">
+          <input type="password" id="openrouter-api-key-input" placeholder="OpenRouter API Key" required>
+          <button type="button" id="toggle-openrouter-visibility" class="toggle-visibility-btn">
             <span class="material-symbols-rounded">visibility</span>
           </button>
         </div>
         <div class="model-selection">
-          <label for="model-select">Select AI Model:</label>
-          <select id="model-select">
+          <label for="openrouter-model-select">Select AI Model:</label>
+          <select id="openrouter-model-select">
             <!-- Free OpenRouter Models -->
             <optgroup label="OpenAI Models">
               <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
@@ -178,6 +197,67 @@
             </optgroup>
           </select>
         </div>
+      </div>
+      
+      <div id="groq-settings" class="provider-settings" style="display: none;">
+        <p>Enter your API key from <a href="https://console.groq.com/keys" target="_blank">Groq</a>.</p>
+        <div class="input-with-toggle">
+          <input type="password" id="groq-api-key-input" placeholder="Groq API Key" required>
+          <button type="button" id="toggle-groq-visibility" class="toggle-visibility-btn">
+            <span class="material-symbols-rounded">visibility</span>
+          </button>
+        </div>
+        <div class="model-selection">
+          <label for="groq-model-select">Select AI Model:</label>
+          <select id="groq-model-select">
+            <!-- Production Models -->
+            <optgroup label="Production Models">
+              <option value="llama-3.3-70b-versatile">Llama 3.3 70B Versatile</option>
+              <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant</option>
+              <option value="llama-guard-3-8b">Llama Guard 3 8B</option>
+              <option value="llama3-70b-8192">Llama3 70B (8K context)</option>
+              <option value="llama3-8b-8192">Llama3 8B (8K context)</option>
+              <option value="mixtral-8x7b-32768">Mixtral 8x7B (32K context)</option>
+              <option value="gemma2-9b-it">Gemma 2 9B</option>
+            </optgroup>
+            <!-- Preview Models -->
+            <optgroup label="Preview Models">
+              <option value="mistral-saba-24b">Mistral Saba 24B</option>
+              <option value="qwen-2.5-coder-32b">Qwen 2.5 Coder 32B</option>
+              <option value="qwen-2.5-32b">Qwen 2.5 32B</option>
+              <option value="deepseek-r1-distill-qwen-32b">DeepSeek R1 Distill Qwen 32B</option>
+              <option value="deepseek-r1-distill-llama-70b-specdec">DeepSeek R1 Distill Llama 70B SpecDec</option>
+              <option value="deepseek-r1-distill-llama-70b">DeepSeek R1 Distill Llama 70B</option>
+              <option value="llama-3.3-70b-specdec">Llama 3.3 70B SpecDec</option>
+              <option value="llama-3.2-1b-preview">Llama 3.2 1B Preview</option>
+              <option value="llama-3.2-3b-preview">Llama 3.2 3B Preview</option>
+              <option value="llama-3.2-11b-vision-preview">Llama 3.2 11B Vision Preview</option>
+              <option value="llama-3.2-90b-vision-preview">Llama 3.2 90B Vision Preview</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      
+      <div id="google-settings" class="provider-settings" style="display: none;">
+        <p>Enter your API key from <a href="https://aistudio.google.com/apikey" target="_blank">Google AI Studio</a>.</p>
+        <div class="input-with-toggle">
+          <input type="password" id="google-api-key-input" placeholder="Google Gemini API Key" value="AIzaSyBzqRjQ8LJ2tksxmIELNQ18FU2EHP0hJmQ" required>
+          <button type="button" id="toggle-google-visibility" class="toggle-visibility-btn">
+            <span class="material-symbols-rounded">visibility</span>
+          </button>
+        </div>
+        <div class="model-selection">
+          <label for="google-model-select">Select AI Model:</label>
+          <select id="google-model-select">
+            <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+            <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+            <option value="gemini-1.0-pro">Gemini 1.0 Pro</option>
+          </select>
+        </div>
+      </div>
+      
+      <form id="api-key-form">
         <div class="button-group">
           <button type="submit" class="primary-btn">Save Settings</button>
           <button type="button" id="use-default-btn" class="secondary-btn">Use Default Settings</button>
