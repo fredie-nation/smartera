@@ -17,16 +17,20 @@ marked.use({
     paragraph(text) {
       return `<p>${text}</p>`;
     },
-    // Add copy button to code blocks
+    // Add copy button to code blocks and language indicator
     code(code, language) {
       const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+      const displayLanguage = validLanguage !== 'plaintext' ? validLanguage : 'text';
       const highlightedCode = hljs.highlight(code, { language: validLanguage }).value;
       
       return `<div class="code-block-wrapper">
+                <div class="code-header">
+                  <span class="code-language">${displayLanguage}</span>
+                  <button class="copy-code-btn" title="Copy code">
+                    <span class="material-symbols-rounded">content_copy</span>
+                  </button>
+                </div>
                 <pre><code class="hljs language-${validLanguage}">${highlightedCode}</code></pre>
-                <button class="copy-code-btn" title="Copy code">
-                  <span class="material-symbols-rounded">content_copy</span>
-                </button>
               </div>`;
     }
   }
@@ -69,13 +73,14 @@ const toggleGoogleVisibilityBtn = document.getElementById('toggle-google-visibil
 // Default API keys and models
 const DEFAULT_OPENROUTER_API_KEY = "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";
 const DEFAULT_OPENROUTER_MODEL = "google/gemini-pro";
-const DEFAULT_GROQ_MODEL = "llama-3.1-8b-instant";
+const DEFAULT_GROQ_API_KEY = "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";
+const DEFAULT_GROQ_MODEL = "deepseek-r1-distill-qwen-32b";
 const DEFAULT_GOOGLE_MODEL = "gemini-2.0-flash";
 
 // State
-let apiProvider = localStorage.getItem('api_provider') || 'openrouter';
+let apiProvider = localStorage.getItem('api_provider') || 'groq';
 let openrouterApiKey = localStorage.getItem('openrouter_api_key') || DEFAULT_OPENROUTER_API_KEY;
-let groqApiKey = localStorage.getItem('groq_api_key') || '';
+let groqApiKey = localStorage.getItem('groq_api_key') || DEFAULT_GROQ_API_KEY;
 let googleApiKey = localStorage.getItem('google_api_key') || '';
 let selectedOpenrouterModel = localStorage.getItem('openrouter_model') || DEFAULT_OPENROUTER_MODEL;
 let selectedGroqModel = localStorage.getItem('groq_model') || DEFAULT_GROQ_MODEL;
@@ -278,6 +283,8 @@ function handleCopyButtonClick(e) {
   if (e.target.closest('.copy-code-btn')) {
     const button = e.target.closest('.copy-code-btn');
     const codeBlock = button.closest('.code-block-wrapper').querySelector('code');
+    
+    // Get the raw text content without HTML tags
     const codeToCopy = codeBlock.textContent;
     
     copyToClipboard(codeToCopy, button);
@@ -392,15 +399,15 @@ function toggleApiKeyVisibility(provider) {
 
 // Use Default Settings
 function useDefaultSettings() {
-  apiProvider = 'openrouter';
-  openrouterApiKey = DEFAULT_OPENROUTER_API_KEY;
-  selectedOpenrouterModel = DEFAULT_OPENROUTER_MODEL;
+  apiProvider = 'groq';
+  groqApiKey = DEFAULT_GROQ_API_KEY;
+  selectedGroqModel = DEFAULT_GROQ_MODEL;
   
   localStorage.setItem('api_provider', apiProvider);
-  localStorage.setItem('openrouter_api_key', openrouterApiKey);
-  localStorage.setItem('openrouter_model', selectedOpenrouterModel);
+  localStorage.setItem('groq_api_key', groqApiKey);
+  localStorage.setItem('groq_model', selectedGroqModel);
   
-  document.querySelector('input[name="api-provider"][value="openrouter"]').checked = true;
+  document.querySelector('input[name="api-provider"][value="groq"]').checked = true;
   toggleProviderSettings();
   
   updateModelDisplay();
@@ -565,7 +572,7 @@ async function handleChatSubmit(e) {
   });
 
   // Add AI thinking indicator
-  const loadingId = addLoadingIndicator();
+  const thinkingId = addThinkingIndicator();
 
   try {
     let response;
@@ -703,8 +710,8 @@ async function handleChatSubmit(e) {
       content: aiMessage
     });
     
-    // Remove loading indicator
-    removeLoadingIndicator(loadingId);
+    // Remove thinking indicator
+    removeThinkingIndicator(thinkingId);
     
     // Add AI response to UI with streaming effect
     await addStreamingMessageToUI('ai', aiMessage);
@@ -726,8 +733,8 @@ async function handleChatSubmit(e) {
   } catch (error) {
     console.error(`Error sending message to ${apiProvider === 'openrouter' ? 'OpenRouter' : apiProvider === 'groq' ? 'Groq' : 'Google Gemini'}:`, error);
     
-    // Remove loading indicator
-    removeLoadingIndicator(loadingId);
+    // Remove thinking indicator
+    removeThinkingIndicator(thinkingId);
     
     // Reset streaming flag
     isStreaming = false;
@@ -843,6 +850,9 @@ function addMessageToUI(role, content) {
       // Process content to fix spacing issues
       const processedContent = processMarkdownSpacing(content);
       textDiv.innerHTML = marked.parse(processedContent);
+      
+      // Fix code blocks by ensuring they display properly
+      fixCodeBlockDisplay(textDiv);
     } catch (error) {
       console.error('Error parsing markdown:', error);
       textDiv.textContent = content; // Fallback to plain text if markdown parsing fails
@@ -866,18 +876,40 @@ function addMessageToUI(role, content) {
   scrollToBottom();
 }
 
+// Fix code block display to ensure HTML tags are not shown as text
+function fixCodeBlockDisplay(element) {
+  const codeBlocks = element.querySelectorAll('pre code');
+  
+  codeBlocks.forEach(codeBlock => {
+    // Check if there are escaped HTML tags
+    if (codeBlock.innerHTML.includes('&lt;span') || codeBlock.innerHTML.includes('&amp;lt;')) {
+      const rawCode = codeBlock.textContent; // Get raw text without HTML
+      const language = codeBlock.className.replace('hljs language-', '');
+      const validLanguage = hljs.getLanguage(language) ? language : 'plaintext';
+      
+      // Re-highlight and update content
+      codeBlock.innerHTML = hljs.highlight(rawCode, { language: validLanguage }).value;
+    }
+  });
+}
+
 // Process markdown to fix spacing issues
 function processMarkdownSpacing(content) {
-  // Replace excessive newlines (more than 2) with just 2 newlines
-  let processed = content.replace(/\n{3,}/g, '\n\n');
+  // Split content into code blocks and regular text
+  const parts = content.split(/(```[\s\S]*?```|`[\s\S]*?`)/g);
   
-  // Ensure proper spacing for lists
-  processed = processed.replace(/\n\n([-*+]|\d+\.)\s/g, '\n$1 ');
+  const processedParts = parts.map((part, index) => {
+    // Keep code blocks intact
+    if (index % 2 === 1) return part;
+    
+    // Process regular text outside code blocks
+    let processed = part.replace(/\n{3,}/g, '\n\n');
+    processed = processed.replace(/\n\n([-*+]|\d+\.)\s/g, '\n$1 ');
+    processed = processed.replace(/\n\n(#{1,6})\s/g, '\n$1 ');
+    return processed;
+  });
   
-  // Fix spacing around headings
-  processed = processed.replace(/\n\n(#{1,6})\s/g, '\n$1 ');
-  
-  return processed;
+  return processedParts.join('');
 }
 
 // Add Streaming Message to UI
@@ -922,6 +954,9 @@ async function addStreamingMessageToUI(role, content) {
     // Update content with markdown parsing
     try {
       textDiv.innerHTML = marked.parse(currentText);
+      
+      // Fix code blocks to ensure proper display
+      fixCodeBlockDisplay(textDiv);
     } catch (error) {
       console.error('Error parsing markdown during streaming:', error);
       textDiv.textContent = currentText;
@@ -948,12 +983,12 @@ async function addStreamingMessageToUI(role, content) {
   return messageDiv;
 }
 
-// Add Loading Indicator
-function addLoadingIndicator() {
+// Add Thinking Indicator (new function replacing loading indicator)
+function addThinkingIndicator() {
   const id = Date.now().toString();
-  const loadingDiv = document.createElement('div');
-  loadingDiv.className = 'message ai-message';
-  loadingDiv.id = `loading-${id}`;
+  const messageDiv = document.createElement('div');
+  messageDiv.className = 'message ai-message thinking-message';
+  messageDiv.id = `thinking-${id}`;
   
   const avatarDiv = document.createElement('div');
   avatarDiv.className = 'message-avatar ai-avatar';
@@ -962,34 +997,25 @@ function addLoadingIndicator() {
   const contentDiv = document.createElement('div');
   contentDiv.className = 'message-content';
   
-  const loadingIndicator = document.createElement('div');
-  loadingIndicator.className = 'loading-indicator';
+  const textDiv = document.createElement('div');
+  textDiv.className = 'message-text';
+  textDiv.textContent = 'Thinking...';
   
-  const loadingDots = document.createElement('div');
-  loadingDots.className = 'loading-dots';
+  contentDiv.appendChild(textDiv);
+  messageDiv.appendChild(avatarDiv);
+  messageDiv.appendChild(contentDiv);
   
-  for (let i = 0; i < 3; i++) {
-    const dot = document.createElement('div');
-    dot.className = 'dot';
-    loadingDots.appendChild(dot);
-  }
-  
-  loadingIndicator.appendChild(loadingDots);
-  contentDiv.appendChild(loadingIndicator);
-  loadingDiv.appendChild(avatarDiv);
-  loadingDiv.appendChild(contentDiv);
-  
-  chatMessages.appendChild(loadingDiv);
+  chatMessages.appendChild(messageDiv);
   scrollToBottom();
   
   return id;
 }
 
-// Remove Loading Indicator
-function removeLoadingIndicator(id) {
-  const loadingDiv = document.getElementById(`loading-${id}`);
-  if (loadingDiv) {
-    loadingDiv.remove();
+// Remove Thinking Indicator
+function removeThinkingIndicator(id) {
+  const thinkingDiv = document.getElementById(`thinking-${id}`);
+  if (thinkingDiv) {
+    thinkingDiv.remove();
   }
 }
 
