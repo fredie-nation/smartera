@@ -14,12 +14,14 @@
   --border-color: #4d4d4f;
   --text-color: #ececf1;
   --text-secondary: #acacbe;
+  --text-muted: #8e8ea0;
   --primary-color: #a855f7;
   --primary-hover: #9333ea;
   --error-color: #ef4146;
   --success-color: #19c37d;
   --code-bg: #1e1e2e;
   --code-text: #f8f8f2;
+  --thinking-border: #4d4d4f;
 }
 
 body {
@@ -206,7 +208,6 @@ body {
   max-width: 800px;
   width: 100%;
   padding: 20px;
-  padding-top: 10rem;
 }
 
 .welcome-content h1 {
@@ -351,6 +352,16 @@ body {
   background-color: transparent;
 }
 
+/* New thinking message style */
+.thinking-message {
+  border-left: 3px solid var(--thinking-border);
+  padding-left: 13px;
+}
+
+.thinking-message .message-text {
+  color: var(--text-muted);
+}
+
 .message-avatar {
   width: 30px;
   height: 30px;
@@ -424,18 +435,34 @@ body {
 .code-block-wrapper {
   position: relative;
   margin: 16px 0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-language {
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
 .copy-code-btn {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: none;
   color: var(--text-secondary);
   border: none;
   border-radius: 4px;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -451,6 +478,11 @@ body {
 .copy-code-btn.copied {
   background-color: var(--success-color);
   color: white;
+}
+
+.code-block-wrapper pre {
+  margin: 0 !important;
+  border-radius: 0 !important;
 }
 
 /* Markdown Styling */
@@ -471,10 +503,14 @@ body {
 
 .message-text h1 {
   font-size: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
 }
 
 .message-text h2 {
   font-size: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 6px;
 }
 
 .message-text h3 {
@@ -516,9 +552,13 @@ body {
   margin-bottom: 8px;
 }
 
+.message-text ul li:last-child, .message-text ol li:last-child {
+  margin-bottom: 0;
+}
+
 .message-text blockquote {
   border-left: 4px solid var(--primary-color);
-  padding-left: 16px;
+  padding: 0 0 0 16px;
   margin: 16px 0;
   color: var(--text-secondary);
 }
@@ -533,6 +573,7 @@ body {
   border-collapse: collapse;
   width: 100%;
   margin: 16px 0;
+  font-size: 14px;
 }
 
 .message-text th, .message-text td {
@@ -543,6 +584,11 @@ body {
 
 .message-text th {
   background-color: rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+}
+
+.message-text tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 .message-text a {
