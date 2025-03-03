@@ -22,7 +22,7 @@ A modern AI-powered website that integrates multiple AI APIs including Google Ge
 
 1. **Clone repository**
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
+   git clone https://github.com/fredie-nation/smartera.git
    cd your-repo-name
 2. Install Node.js and npm: https://nodejs.org/
 3. npm install
