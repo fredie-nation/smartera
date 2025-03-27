@@ -75,7 +75,7 @@ const DEFAULT_OPENROUTER_API_KEY = "sk-or-v1-129967ad31a8dce847b23a15c7c71cd30e5
 const DEFAULT_OPENROUTER_MODEL = "google/gemini-pro";
 const DEFAULT_GROQ_API_KEY = "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";
 const DEFAULT_GROQ_MODEL = "llama-3.3-70b-versatile";
-const DEFAULT_GOOGLE_MODEL = "gemini-2.0-flash";
+const DEFAULT_GOOGLE_MODEL = "gemini-2.5-pro-exp-03-25";
 
 // State
 let apiProvider = localStorage.getItem('api_provider') || 'groq';
